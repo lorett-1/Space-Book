@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpaceBook Network | Plataforma de Espaços Sob Demanda</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        /* Variáveis de Cores (Tema Corporativo Dark) */
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --primary: #38bdf8;
+            --primary-hover: #0284c7;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* Navbar */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background-color: rgba(15, 23, 42, 0.95);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+            transition: 0.3s;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: #fff;
+        }
+
+        /* Hero Section */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 120px 5% 80px;
+            background: radial-gradient(circle at top, rgba(56, 189, 248, 0.15) 0%, transparent 60%);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            max-width: 800px;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin-bottom: 40px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+        }
+
+        /* Features */
+        .features {
+            padding: 80px 5%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .feature-card {
+            background-color: var(--bg-card);
+            padding: 40px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+        }
+
+        .feature-card i {
+            font-size: 40px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        /* Marketplace / Units */
+        .marketplace {
+            padding: 80px 5%;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+        }
+
+        .units-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .unit-card {
+            background-color: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .unit-img {
+            width: 100%;
+            height: 200px;
+            background-color: #334155;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .unit-content {
+            padding: 20px;
+        }
+
+        .unit-price {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin: 10px 0;
+        }
+
+        /* Modais */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-content {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 450px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            color: var(--text-main);
+        }
+
+        /* Modal Dashboard - Novo Layout Premium */
+        .dashboard-modal {
+            max-width: 850px;
+            padding: 0; 
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            overflow: hidden;
+        }
+        .client-info {
+            padding: 40px;
+            border-right: 1px solid var(--border-color);
+        }
+        .client-info .header h1 {
+            color: var(--primary);
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        .info-label {
+            display: block;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+        .info-value {
+            font-size: 16px;
+            color: var(--text-main);
+            font-weight: 500;
+            margin-bottom: 25px;
+        }
+        .qr-section {
+            background: rgba(0, 0, 0, 0.15);
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .qr-box {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        .qr-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+        .qr-status::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-modal { grid-template-columns: 1fr; max-height: 90vh; overflow-y: auto;}
+            .client-info { border-right: none; border-bottom: 1px solid var(--border-color); padding: 30px; }
+            .qr-section { padding: 30px; }
+        }
+        
+        /* Estilos do Scroll */
+        .modal-content::-webkit-scrollbar { width: 8px; }
+        .modal-content::-webkit-scrollbar-track { background: var(--bg-dark); border-radius: 8px; }
+        .modal-content::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 8px; }
+        .modal-content::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            z-index: 100;
+        }
+        .close-btn:hover { color: var(--primary); }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; }
+        .form-group input:not([type="radio"]):not([type="checkbox"]), .form-group select, .form-group textarea {
+            width: 100%; padding: 10px 14px; background-color: var(--bg-dark); border: 1px solid var(--border-color);
+            border-radius: 8px; color: var(--text-main); font-size: 1rem;
+        }
+        .form-group input:not([type="radio"]):not([type="checkbox"]):focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none; border-color: var(--primary);
+        }
+
+        /* Estilos adicionais para Radios e Checkboxes do Feedback */
+        .radio-options { display: flex; flex-direction: column; gap: 8px; margin-top: 5px; }
+        .radio-label { display: flex !important; align-items: center; gap: 8px; font-weight: 400 !important; font-size: 0.9rem; cursor: pointer; margin-bottom: 0 !important; }
+        .scale-options { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 5px; }
+        .scale-label { display: flex !important; align-items: center; gap: 4px; font-weight: 400 !important; font-size: 0.9rem; cursor: pointer; margin-bottom: 0 !important; }
+        .scale-text { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-top: 5px; }
+        
+        /* Cor de destaque (azul) para os inputs de marcação */
+        input[type="radio"], input[type="checkbox"] { accent-color: var(--primary); width: 16px; height: 16px; cursor: pointer; }
+        
+        .inline-input { width: 100%; margin-top: 10px; }
+
+        /* Toast */
+        #toastNotification {
+            visibility: hidden; min-width: 280px; background-color: #10b981; color: white;
+            text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 3000;
+            bottom: 30px; left: 50%; transform: translateX(-50%); opacity: 0;
+            transition: opacity 0.3s, bottom 0.3s; font-weight: 600;
+        }
+        #toastNotification.show { visibility: visible; opacity: 1; bottom: 50px; }
+        
+        /* Tech Stack */
+        .tech-stack { background-color: var(--bg-card); padding: 60px 5%; text-align: center; margin-top: 50px; }
+        .tech-icons { display: flex; justify-content: center; gap: 40px; margin-top: 30px; font-size: 40px; color: var(--text-muted); }
+        
+        /* Footer */
+        footer { background-color: rgba(15, 23, 42, 1); padding: 40px 5%; text-align: center; border-top: 1px solid var(--border-color); color: var(--text-muted); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">SpaceBook Network</div>
+        <nav class="nav-links">
+            <a href="#funcionalidades">Funcionalidades</a>
+            <a href="#unidades">Unidades</a>
+            <a href="#tecnologia">Tecnologia</a>
+        </nav>
+        <a href="#" class="btn" onclick="openModal('modalLogin')">Área do Cliente</a>
+    </header>
+
+    <section class="hero">
+        <h1>Trabalhe de qualquer lugar. Sem burocracia.</h1>
+        <p>Acesse uma rede premium de escritórios, salas de reunião e estúdios sob demanda. Sem aluguel fixo, pague apenas pelo tempo que utilizar.</p>
+        <div class="hero-buttons">
+            <a href="#unidades" class="btn">Explorar Espaços</a>
+            <a href="#" class="btn btn-outline" onclick="openModal('modalParceiro')">Seja um Parceiro (Hospede)</a>
+        </div>
+    </section>
+
+    <section id="funcionalidades" class="features">
+        <div class="feature-card">
+            <i class="fa-solid fa-bolt"></i>
+            <h3>Reserva Rápida</h3>
+            <p>Fluxo de reserva intuitivo e concluído em apenas 3 cliques. Status em tempo real.</p>
+        </div>
+        <div class="feature-card">
+            <i class="fa-solid fa-wifi"></i>
+            <h3>Infraestrutura Completa</h3>
+            <p>Todas as unidades incluem Wi-Fi de alta velocidade, café e equipamentos audiovisuais.</p>
+        </div>
+        <div class="feature-card">
+            <i class="fa-solid fa-leaf"></i>
+            <h3>Impacto Ambiental</h3>
+            <p>100% Paperless. Redução do desperdício de energia em salas ociosas com ESG integrado.</p>
+        </div>
+    </section>
+
+    <section id="unidades" class="marketplace">
+        <h2 class="section-title">Espaços Disponíveis na sua Região</h2>
+        <div class="units-grid">
+            
+            <div class="unit-card">
+                <div class="unit-img" style="background-image: url('https://images.unsplash.com/photo-1604328698692-f76ea9498e76?auto=format&fit=crop&q=80');"></div>
+                <div class="unit-content">
+                    <h3>Sala de Reunião - Paulista Hub</h3>
+                    <p class="unit-price">R$ 80,00 / hora</p>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">📍 São Paulo, SP • Capacidade: 8 pessoas</p>
+                    <button class="btn" style="width: 100%; margin-top: 15px;" onclick="openBooking('Sala de Reunião - Paulista Hub', 80)">Agendar Agora</button>
+                </div>
+            </div>
+
+            <div class="unit-card">
+                <div class="unit-img" style="background-image: url('https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&q=80');"></div>
+                <div class="unit-content">
+                    <h3>Estação Coworking Individual</h3>
+                    <p class="unit-price">R$ 25,00 / hora</p>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">📍 Faria Lima, SP • Capacidade: 1 pessoa</p>
+                    <button class="btn" style="width: 100%; margin-top: 15px;" onclick="openBooking('Estação Coworking Individual', 25)">Agendar Agora</button>
+                </div>
+            </div>
+
+            <div class="unit-card">
+                <div class="unit-img" style="background-image: url('https://images.unsplash.com/photo-1517502884422-41eaead166d4?auto=format&fit=crop&q=80');"></div>
+                <div class="unit-content">
+                    <h3>Auditório Corporativo</h3>
+                    <p class="unit-price">R$ 350,00 / hora</p>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">📍 Berrini, SP • Capacidade: 100 pessoas</p>
+                    <button class="btn" style="width: 100%; margin-top: 15px;" onclick="openBooking('Auditório Corporativo', 350)">Agendar Agora</button>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Modal de Reserva de Espaço -->
+    <div id="modalBooking" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('modalBooking')">&times;</button>
+            <h2 style="margin-bottom: 10px;">Reservar</h2>
+            <p style="color: var(--primary); font-weight: 600; margin-bottom: 15px;" id="bookingUnitName"></p>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">Valor por hora: R$ <span id="bookingUnitPrice"></span></p>
+            
+            <form onsubmit="submitBooking(event)">
+                <div class="form-group">
+                    <label>Data da Reserva:</label>
+                    <input type="date" id="bookingDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Horário de Início:</label>
+                    <input type="time" id="bookingTime" required>
+                </div>
+                <div class="form-group">
+                    <label>Duração (Horas):</label>
+                    <input type="number" id="bookingHours" min="1" value="1" required oninput="calculateTotal()">
+                </div>
+                <h3 style="margin-bottom: 20px; font-size: 1.2rem;">Total: <span id="bookingTotal" style="color: var(--primary);">R$ 0,00</span></h3>
+                <button type="submit" class="btn" style="width: 100%;">Confirmar e Gerar Acesso</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Sucesso de Reserva (QR Code de Acesso) -->
+    <div id="modalSuccess" class="modal-overlay">
+        <div class="modal-content" style="text-align: center;">
+            <h2 style="margin-bottom: 10px; color: var(--primary);">Reserva Confirmada!</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px;">Apresente este QR Code na recepção ou catraca de acesso.</p>
+            
+            <img id="qrCodeImage" src="" alt="QR Code de Acesso" style="width: 180px; height: 180px; margin-bottom: 20px; border-radius: 8px; background: white; padding: 10px;">
+            
+            <div style="background-color: var(--bg-dark); padding: 15px; border-radius: 8px; text-align: left; margin-bottom: 25px; border: 1px solid var(--border-color);">
+                <p><strong>Espaço:</strong> <span id="resumoEspaco"></span></p>
+                <p><strong>Data:</strong> <span id="resumoData"></span></p>
+                <p><strong>Horário:</strong> <span id="resumoHora"></span></p>
+                <p><strong>Duração:</strong> <span id="resumoDuracao"></span> hora(s)</p>
+            </div>
+            
+            <button type="button" class="btn" style="width: 100%;" onclick="openFeedback()">Deixar meu Feedback</button>
+        </div>
+    </div>
+
+    <!-- Modal de Feedback com as 11 Perguntas -->
+    <div id="modalFeedback" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('modalFeedback')">&times;</button>
+            <h2 style="margin-bottom: 15px; color: var(--primary);">Avalie sua Experiência</h2>
+            <p style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text-muted);">Sua opinião é fundamental para melhorarmos nosso serviço.</p>
+            
+            <form onsubmit="submitFeedback(event)">
+                
+                <div class="form-group">
+                    <label>1. De 0 a 10, qual nota você daria para o nosso site de forma geral?</label>
+                    <div class="scale-options">
+                        <label class="scale-label"><input type="radio" name="p1" value="0"> 0</label>
+                        <label class="scale-label"><input type="radio" name="p1" value="1"> 1</label>
+                        <label class="scale-label"><input type="radio" name="p1" value="2"> 2</label>
+                        <label class="scale-label"><input type="radio" name="p1" value="3"> 3</label>
+                        <label class="scale-label"><input type="radio" name="p1" value="4"> 4</label>
+                        <label class="scale-label"><input type="radio" name="p1" value="5"> 5</label>
+                        <label class="scale-label"><input type="radio" name="p1" value="6"> 6</label>
+                        <label class="scale-label"><input type="radio" name="p1" value="7"> 7</label>
+                        <label class="scale-label"><input type="radio" name="p1" value="8"> 8</label>
+                        <label class="scale-label"><input type="radio" name="p1" value="9"> 9</label>
+                        <label class="scale-label"><input type="radio" name="p1" value="10"> 10</label>
+                    </div>
+                    <div class="scale-text">
+                        <span>0 — Muito ruim</span>
+                        <span>10 — Excelente</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>2. O que você mais gostou no nosso site?</label>
+                    <textarea name="p2" rows="2" placeholder="Digite sua resposta..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>3. O site foi fácil de acessar e utilizar?</label>
+                    <div class="radio-options">
+                        <label class="radio-label"><input type="radio" name="p3" value="Muito fácil"> Muito fácil</label>
+                        <label class="radio-label"><input type="radio" name="p3" value="Fácil"> Fácil</label>
+                        <label class="radio-label"><input type="radio" name="p3" value="Mais ou menos"> Mais ou menos</label>
+                        <label class="radio-label"><input type="radio" name="p3" value="Difícil"> Difícil</label>
+                        <label class="radio-label"><input type="radio" name="p3" value="Muito difícil"> Muito difícil</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>4. O que você achou da aparência do site?</label>
+                    <div class="radio-options">
+                        <label class="radio-label"><input type="radio" name="p4" value="Excelente"> Excelente</label>
+                        <label class="radio-label"><input type="radio" name="p4" value="Bom"> Bom</label>
+                        <label class="radio-label"><input type="radio" name="p4" value="Regular"> Regular</label>
+                        <label class="radio-label"><input type="radio" name="p4" value="Ruim"> Ruim</label>
+                        <label class="radio-label"><input type="radio" name="p4" value="Muito ruim"> Muito ruim</label>
+                    </div>
+                    <input type="text" name="p4_exp" class="inline-input" placeholder="Se quiser, explique sua resposta...">
+                </div>
+
+                <div class="form-group">
+                    <label>5. Como você avalia a organização e a facilidade de navegação pelo catálogo de espaços?</label>
+                    <div class="radio-options">
+                        <label class="radio-label"><input type="radio" name="p5" value="Excelente"> Excelente</label>
+                        <label class="radio-label"><input type="radio" name="p5" value="Boa"> Boa</label>
+                        <label class="radio-label"><input type="radio" name="p5" value="Regular"> Regular</label>
+                        <label class="radio-label"><input type="radio" name="p5" value="Ruim"> Ruim</label>
+                        <label class="radio-label"><input type="radio" name="p5" value="Muito ruim"> Muito ruim</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>6. As informações apresentadas sobre os espaços foram suficientes para você tomar uma decisão?</label>
+                    <div class="radio-options">
+                        <label class="radio-label"><input type="radio" name="p6" value="Sim, foram suficientes"> Sim, foram suficientes</label>
+                        <label class="radio-label"><input type="radio" name="p6" value="Foram parcialmente suficientes"> Foram parcialmente suficientes</label>
+                        <label class="radio-label"><input type="radio" name="p6" value="Não foram suficientes"> Não foram suficientes</label>
+                        <label class="radio-label"><input type="radio" name="p6" value="Não encontrei as informações que procurava"> Não encontrei as informações que procurava</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>7. De 0 a 10, qual a probabilidade de você recomendar nosso site para outra pessoa?</label>
+                    <div class="scale-options">
+                        <label class="scale-label"><input type="radio" name="p7" value="0"> 0</label>
+                        <label class="scale-label"><input type="radio" name="p7" value="1"> 1</label>
+                        <label class="scale-label"><input type="radio" name="p7" value="2"> 2</label>
+                        <label class="scale-label"><input type="radio" name="p7" value="3"> 3</label>
+                        <label class="scale-label"><input type="radio" name="p7" value="4"> 4</label>
+                        <label class="scale-label"><input type="radio" name="p7" value="5"> 5</label>
+                        <label class="scale-label"><input type="radio" name="p7" value="6"> 6</label>
+                        <label class="scale-label"><input type="radio" name="p7" value="7"> 7</label>
+                        <label class="scale-label"><input type="radio" name="p7" value="8"> 8</label>
+                        <label class="scale-label"><input type="radio" name="p7" value="9"> 9</label>
+                        <label class="scale-label"><input type="radio" name="p7" value="10"> 10</label>
+                    </div>
+                    <div class="scale-text">
+                        <span>0 — Não recomendaria</span>
+                        <span>10 — Recomendaria com certeza</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>8. Você encontrou algum espaço que atende às suas necessidades ou expectativas?</label>
+                    <div class="radio-options">
+                        <label class="radio-label"><input type="radio" name="p8" value="Sim"> Sim</label>
+                        <label class="radio-label"><input type="radio" name="p8" value="Parcialmente"> Parcialmente</label>
+                        <label class="radio-label"><input type="radio" name="p8" value="Não"> Não</label>
+                        <label class="radio-label"><input type="radio" name="p8" value="Não estava procurando um espaço no momento"> Não estava procurando um espaço no momento</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>9. Qual é o seu perfil ou tipo de negócio?</label>
+                    <div class="radio-options">
+                        <label class="radio-label"><input type="radio" name="p9" value="Profissional autônomo"> Profissional autônomo</label>
+                        <label class="radio-label"><input type="radio" name="p9" value="Freelancer"> Freelancer</label>
+                        <label class="radio-label"><input type="radio" name="p9" value="Pequena empresa"> Pequena empresa</label>
+                        <label class="radio-label"><input type="radio" name="p9" value="Média/grande empresa"> Média/grande empresa</label>
+                        <label class="radio-label"><input type="radio" name="p9" value="Startup"> Startup</label>
+                        <label class="radio-label"><input type="radio" name="p9" value="Estudante"> Estudante</label>
+                        <label class="radio-label"><input type="radio" name="p9" value="Trabalho remoto"> Trabalho remoto</label>
+                        <label class="radio-label"><input type="radio" name="p9" value="Não possuo empresa/negócio"> Não possuo empresa/negócio</label>
+                        <label class="radio-label"><input type="radio" name="p9" value="Outro"> Outro:</label>
+                    </div>
+                    <input type="text" name="p9_outro" class="inline-input" placeholder="Especifique...">
+                </div>
+
+                <div class="form-group">
+                    <label>10. Como você avalia sua experiência desde o primeiro contato até o atendimento e o processo de pagamento?</label>
+                    <div class="radio-options">
+                        <label class="radio-label"><input type="radio" name="p10" value="Excelente"> Excelente</label>
+                        <label class="radio-label"><input type="radio" name="p10" value="Boa"> Boa</label>
+                        <label class="radio-label"><input type="radio" name="p10" value="Regular"> Regular</label>
+                        <label class="radio-label"><input type="radio" name="p10" value="Ruim"> Ruim</label>
+                        <label class="radio-label"><input type="radio" name="p10" value="Muito ruim"> Muito ruim</label>
+                    </div>
+                    <input type="text" name="p10_melhorar" class="inline-input" placeholder="O que poderíamos melhorar?">
+                </div>
+
+                <!-- PERGUNTA 11 ALTERADA PARA MÚLTIPLA ESCOLHA (CHECKBOX) -->
+                <div class="form-group">
+                    <label>11. Se você precisasse de um espaço de trabalho, quais seriam os principais fatores para escolher um espaço? (Selecione um ou mais)</label>
+                    <div class="radio-options">
+                        <label class="radio-label"><input type="checkbox" name="p11" value="Preço"> Preço</label>
+                        <label class="radio-label"><input type="checkbox" name="p11" value="Localização"> Localização</label>
+                        <label class="radio-label"><input type="checkbox" name="p11" value="Estrutura"> Estrutura</label>
+                        <label class="radio-label"><input type="checkbox" name="p11" value="Internet"> Internet</label>
+                        <label class="radio-label"><input type="checkbox" name="p11" value="Conforto"> Conforto</label>
+                        <label class="radio-label"><input type="checkbox" name="p11" value="Segurança"> Segurança</label>
+                        <label class="radio-label"><input type="checkbox" name="p11" value="Privacidade"> Privacidade</label>
+                        <label class="radio-label"><input type="checkbox" name="p11" value="Aparência/design do espaço"> Aparência/design do espaço</label>
+                        <label class="radio-label"><input type="checkbox" name="p11" value="Serviços oferecidos"> Serviços oferecidos</label>
+                        <label class="radio-label"><input type="checkbox" name="p11" value="Outro"> Outro:</label>
+                    </div>
+                    <input type="text" name="p11_outro" class="inline-input" placeholder="Especifique...">
+                </div>
+
+                <button type="submit" class="btn" style="width: 100%; margin-top: 10px;">Enviar Avaliação</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Login -->
+    <div id="modalLogin" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('modalLogin')">&times;</button>
+            <h2 style="margin-bottom: 15px;">Acesso à Conta</h2>
+            <form onsubmit="submitLogin(event)">
+                <div class="form-group">
+                    <label>E-mail Corporativo:</label>
+                    <input type="email" id="loginEmail" required placeholder="seu@empresa.com.br">
+                </div>
+                <div class="form-group">
+                    <label>Senha:</label>
+                    <input type="password" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn" style="width: 100%;">Entrar na Área do Cliente</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- NOVA MODAL: Dashboard (Área do Cliente Premium) -->
+    <div id="modalDashboard" class="modal-overlay">
+        <div class="modal-content dashboard-modal">
+            <button class="close-btn" onclick="closeModal('modalDashboard')">&times;</button>
+            
+            <!-- Informações do Cliente -->
+            <div class="client-info">
+                <div class="header" style="margin-bottom: 30px;">
+                    <h1>Olá, <span id="clientNameDisplay">Visitante</span></h1>
+                    <p style="color: var(--text-muted); font-size: 14px;">Gerencie seus dados e acesso corporativo</p>
+                </div>
+
+                <div class="info-group">
+                    <span class="info-label">ID da Credencial</span>
+                    <span class="info-value">#CLI-8472910</span>
+                </div>
+                
+                <div class="info-group">
+                    <span class="info-label">Plano Atual</span>
+                    <span class="info-value" style="color: var(--primary);">Enterprise Premium</span>
+                </div>
+
+                <div class="info-group">
+                    <span class="info-label">E-mail Cadastrado</span>
+                    <span class="info-value" id="clientEmailDisplay">contato@empresa.com.br</span>
+                </div>
+
+                <div style="margin-top: 40px;">
+                    <button type="button" class="btn btn-outline" style="width: 100%;" onclick="closeModal('modalDashboard'); openModal('modalLogin')">Sair da Conta</button>
+                </div>
+            </div>
+
+            <!-- Credencial / QR Code Seguro -->
+            <div class="qr-section">
+                <div class="qr-status">Passe Ativo</div>
+                <div class="qr-box">
+                    <img id="dashboardQrCode" src="" alt="QR Code Dinâmico">
+                </div>
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">Acesso dinâmico verificado via Token JWT</p>
+                <button type="button" class="btn" style="width: 100%;"><i class="fa-solid fa-download"></i> Baixar Credencial PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Parceiro -->
+    <div id="modalParceiro" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('modalParceiro')">&times;</button>
+            <h2 style="margin-bottom: 15px;">Seja um Parceiro</h2>
+            <form onsubmit="submitParceiro(event)">
+                <div class="form-group">
+                    <label>Nome do Espaço / Empresa:</label>
+                    <input type="text" required placeholder="Ex: Hub Paulista">
+                </div>
+                <div class="form-group">
+                    <label>E-mail de Contato:</label>
+                    <input type="email" required placeholder="seu@email.com">
+                </div>
+                <button type="submit" class="btn" style="width: 100%;">Enviar Proposta</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toastNotification"><span id="toastMessage"></span></div>
+
+    <!-- Lógica JavaScript -->
+    <script>
+        // Configurar data e hora da reserva
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const dateInput = document.getElementById('bookingDate');
+        if (dateInput) { dateInput.value = tomorrow.toISOString().split('T')[0]; }
+
+        let currentUnitPrice = 0;
+
+        // Controle de Modais
+        function openModal(modalId) { document.getElementById(modalId).classList.add('active'); }
+        function closeModal(modalId) { document.getElementById(modalId).classList.remove('active'); }
+
+        // Fluxo de Reserva
+        function openBooking(unitName, unitPrice) {
+            currentUnitPrice = unitPrice;
+            document.getElementById('bookingUnitName').innerText = unitName;
+            document.getElementById('bookingUnitPrice').innerText = unitPrice.toFixed(2).replace('.', ',');
+            document.getElementById('bookingHours').value = 1;
+            document.getElementById('bookingTime').value = "09:00";
+            calculateTotal();
+            openModal('modalBooking');
+        }
+
+        function calculateTotal() {
+            const hoursInput = document.getElementById('bookingHours');
+            if (!hoursInput) return;
+            const hours = parseInt(hoursInput.value) || 1;
+            const total = hours * currentUnitPrice;
+            document.getElementById('bookingTotal').innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
+        }
+
+        function submitBooking(event) {
+            event.preventDefault();
+            const unitName = document.getElementById('bookingUnitName').innerText;
+            const bDate = document.getElementById('bookingDate').value;
+            const bTime = document.getElementById('bookingTime').value;
+            const bHours = document.getElementById('bookingHours').value;
+
+            const [year, month, day] = bDate.split('-');
+            const dataFormatada = `${day}/${month}/${year}`;
+
+            document.getElementById('resumoEspaco').innerText = unitName;
+            document.getElementById('resumoData').innerText = dataFormatada;
+            document.getElementById('resumoHora').innerText = bTime;
+            document.getElementById('resumoDuracao').innerText = bHours;
+
+            // GERADOR DE QR CODE PROFISSIONAL 1: PAYLOAD JSON DE INGRESSO
+            const payloadReserva = {
+                id_reserva: "RES-" + Math.floor(Math.random() * 90000 + 10000),
+                espaco: unitName,
+                data: dataFormatada,
+                hora: bTime,
+                duracao_h: bHours,
+                status: "PAGO",
+                hash_validacao: btoa(`${unitName}-${dataFormatada}-${bTime}`).substring(0, 16)
+            };
+            
+            const qrData = encodeURIComponent(JSON.stringify(payloadReserva));
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${qrData}&color=0f172a`;
+            document.getElementById('qrCodeImage').src = qrUrl;
+
+            closeModal('modalBooking');
+            openModal('modalSuccess');
+        }
+
+        function openFeedback() {
+            closeModal('modalSuccess');
+            openModal('modalFeedback');
+        }
+
+        // Fluxo de Login -> Dashboard Premium
+        function submitLogin(event) {
+            event.preventDefault();
+            
+            const emailInput = document.getElementById('loginEmail').value;
+            const nomeSimulado = emailInput.split('@')[0].toUpperCase();
+            
+            document.getElementById('clientEmailDisplay').innerText = emailInput;
+            document.getElementById('clientNameDisplay').innerText = nomeSimulado;
+
+            const header = btoa(JSON.stringify({ alg: "HS256", typ: "JWT" }));
+            const payload = btoa(JSON.stringify({
+                sub: "CLI-8472910",
+                name: nomeSimulado,
+                email: emailInput,
+                plan: "Premium",
+                exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60)
+            }));
+            const signature = btoa("chave-secreta-do-servidor-spacebook").substring(0, 16);
+            
+            const jwtToken = `${header}.${payload}.${signature}`;
+            const secureUrl = `https://api.spacebook.com.br/v1/auth/verify?token=${jwtToken}`;
+            const qrDashboardUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(secureUrl)}&color=000000`;
+            document.getElementById('dashboardQrCode').src = qrDashboardUrl;
+
+            closeModal('modalLogin');
+            showToast('Bem-vindo à sua nova Área do Cliente!');
+            openModal('modalDashboard');
+            event.target.reset();
+        }
+
+        function submitFeedback(event) {
+            event.preventDefault();
+            closeModal('modalFeedback');
+            showToast('Obrigado! Sua avaliação foi enviada com sucesso.');
+            event.target.reset();
+        }
+
+        function submitParceiro(event) {
+            event.preventDefault();
+            closeModal('modalParceiro');
+            showToast('Proposta enviada! Retornaremos em breve.');
+            event.target.reset();
+        }
+
+        // Notificação (Toast)
+        function showToast(message) {
+            const toast = document.getElementById('toastNotification');
+            const toastMessage = document.getElementById('toastMessage');
+            if (toast && toastMessage) {
+                toastMessage.innerText = message;
+                toast.classList.add('show');
+                setTimeout(() => { toast.classList.remove('show'); }, 4000);
+            }
+        }
+
+        // Fechar clicando fora da modal
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                event.target.classList.remove('active');
+            }
+        };
+    </script>
+</body>
+</html>
